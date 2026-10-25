@@ -1,0 +1,46 @@
+services:
+  db_p2:
+    image: mysql:8.0
+    container_name: inventory_db_p2
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${DB_NAME:?DB_NAME is required}
+      MYSQL_USER: ${DB_USER:?DB_USER is required}
+      MYSQL_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD is required}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?MYSQL_ROOT_PASSWORD is required}
+    volumes:
+      - inventory_mysql_data_p2:/var/lib/mysql
+    ports:
+      - "3307:3306"
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u root -p\"$${MYSQL_ROOT_PASSWORD}\""]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  app_p2:
+    image: node:20-alpine
+    container_name: inventory_app_p2
+    working_dir: /app
+    restart: unless-stopped
+    ports:
+      - "8082:3000"
+    volumes:
+      - ./:/app
+      - inventory_app_node_modules_p2:/app/node_modules
+    environment:
+      PORT: 3000
+      DB_HOST: db_p2
+      DB_PORT: 3306
+      DB_USER: ${DB_USER:?DB_USER is required}
+      DB_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD is required}
+      DB_NAME: ${DB_NAME:?DB_NAME is required}
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET is required}
+    command: sh -c "npm ci --omit=dev && npm start"
+    depends_on:
+      db_p2:
+        condition: service_healthy
+
+volumes:
+  inventory_mysql_data_p2:
+  inventory_app_node_modules_p2:

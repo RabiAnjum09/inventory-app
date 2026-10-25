@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Inventory & Orders Manager</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- AUTH SCREEN -->
+  <div id="auth-view">
+    <div class="card auth-card">
+      <span class="brand-icon">📦</span>
+      <h1>Inventory Manager</h1>
+      <p class="muted">Sign in or create an account (first account becomes admin)</p>
+      <div class="tabs">
+        <button id="tab-login" class="tab active">Login</button>
+        <button id="tab-register" class="tab">Register</button>
+      </div>
+      <div id="auth-error" class="error hidden"></div>
+      <input id="name" placeholder="Full name" class="hidden">
+      <input id="email" type="email" placeholder="Email">
+      <input id="password" type="password" placeholder="Password (min 6 chars)">
+      <button id="auth-submit" class="btn">Login</button>
+    </div>
+  </div>
+
+  <!-- APP SCREEN -->
+  <div id="app-view" class="hidden">
+    <header>
+      <strong>📦 Inventory &amp; Orders</strong>
+      <nav>
+        <button class="nav active" data-view="dashboard">Dashboard</button>
+        <button class="nav" data-view="products">Products</button>
+        <button class="nav" data-view="orders">Orders</button>
+        <button class="nav" data-view="users">Users</button>
+      </nav>
+      <span><span id="who"></span> <button id="logout" class="btn small secondary">Logout</button></span>
+    </header>
+    <main>
+      <div id="msg" class="hidden"></div>
+
+      <section id="view-dashboard">
+        <h2>Dashboard</h2>
+        <div id="stats" class="grid"></div>
+        <h3>Low stock (&lt; 10)</h3>
+        <table id="low-table"><thead><tr><th>SKU</th><th>Name</th><th>Stock</th></tr></thead><tbody></tbody></table>
+      </section>
+
+      <section id="view-products" class="hidden">
+        <h2>Products</h2>
+        <div class="row">
+          <input id="search" placeholder="Search name, SKU or category">
+          <button id="btn-add-product" class="btn">+ Add Product</button>
+        </div>
+        <form id="product-form" class="card hidden">
+          <input type="hidden" id="p-id">
+          <input id="p-name" placeholder="Name" required>
+          <input id="p-sku" placeholder="SKU" required>
+          <input id="p-category" placeholder="Category">
+          <input id="p-price" type="number" step="0.01" min="0" placeholder="Price" required>
+          <input id="p-stock" type="number" min="0" placeholder="Stock" required>
+          <button class="btn" type="submit" id="p-save">Save</button>
+          <button class="btn secondary" type="button" id="p-cancel">Cancel</button>
+        </form>
+        <table id="product-table"><thead><tr><th>ID</th><th>SKU</th><th>Name</th><th>Category</th><th>Price</th><th>Stock</th><th>Actions</th></tr></thead><tbody></tbody></table>
+      </section>
+
+      <section id="view-orders" class="hidden">
+        <h2>Orders</h2>
+        <div class="card">
+          <h3>New order</h3>
+          <input id="o-customer" placeholder="Customer name">
+          <div class="row">
+            <select id="o-product"></select>
+            <input id="o-qty" type="number" min="1" value="1" style="max-width:100px">
+            <button id="o-add" class="btn secondary" type="button">Add item</button>
+          </div>
+          <table id="cart-table"><thead><tr><th>Product</th><th>Qty</th><th>Subtotal</th><th></th></tr></thead><tbody></tbody></table>
+          <p>Total: <strong id="cart-total">0.00</strong></p>
+          <button id="o-place" class="btn">Place order</button>
+        </div>
+        <h3>Order history</h3>
+        <table id="order-table"><thead><tr><th>ID</th><th>Customer</th><th>Staff</th><th>Total</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead><tbody></tbody></table>
+        <pre id="order-detail" class="card hidden"></pre>
+      </section>
+
+      <section id="view-users" class="hidden">
+        <h2>Users</h2>
+        <table id="user-table"><thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Role</th><th>Created</th></tr></thead><tbody></tbody></table>
+      </section>
+    </main>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>

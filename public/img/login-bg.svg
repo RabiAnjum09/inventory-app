@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1e1b4b"/>
+      <stop offset="0.5" stop-color="#3730a3"/>
+      <stop offset="1" stop-color="#0e7490"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#22d3ee" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#22d3ee" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="grid" width="60" height="60" patternUnits="userSpaceOnUse">
+      <path d="M60 0H0V60" fill="none" stroke="#fff" stroke-opacity="0.06" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="1600" height="900" fill="url(#g)"/>
+  <rect width="1600" height="900" fill="url(#grid)"/>
+  <circle cx="1300" cy="150" r="380" fill="url(#glow)"/>
+  <circle cx="200" cy="800" r="420" fill="url(#glow)" opacity="0.7"/>
+  <!-- stacked boxes (warehouse theme) -->
+  <g fill="#fff" fill-opacity="0.07" stroke="#fff" stroke-opacity="0.18" stroke-width="2">
+    <rect x="1080" y="560" width="150" height="150" rx="10"/>
+    <rect x="1250" y="560" width="150" height="150" rx="10"/>
+    <rect x="1165" y="400" width="150" height="150" rx="10"/>
+    <rect x="120" y="120" width="110" height="110" rx="10"/>
+    <rect x="250" y="120" width="110" height="110" rx="10"/>
+    <rect x="185" y="0" width="110" height="110" rx="10" transform="translate(0,0)"/>
+  </g>
+  <g stroke="#fff" stroke-opacity="0.18" stroke-width="2" fill="none">
+    <path d="M1105 585h100M1105 610h60M1275 585h100M1275 610h60M1190 425h100M1190 450h60"/>
+  </g>
+  <!-- waves -->
+  <path d="M0 760 C300 690 520 840 820 770 S1350 690 1600 780 V900 H0Z" fill="#fff" fill-opacity="0.06"/>
+  <path d="M0 820 C320 760 560 880 880 820 S1380 770 1600 840 V900 H0Z" fill="#fff" fill-opacity="0.08"/>
+</svg>
