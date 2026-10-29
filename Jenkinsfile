@@ -1,3 +1,4 @@
+```groovy
 pipeline {
     agent any
 
@@ -14,6 +15,9 @@ pipeline {
         COMPOSE_PROJECT_NAME = 'inventory_part2'
         COMPOSE_FILE = 'docker-compose-part2.yml'
         ENV_FILE = '/etc/inventory-app-part2.env'
+
+        // Update this value if your EC2 public IP changes
+        JENKINS_PUBLIC_URL = 'http://13.50.110.20:8080'
     }
 
     stages {
@@ -66,7 +70,7 @@ pipeline {
                     body: """Build result: ${currentBuild.currentResult}
 
 Job: ${env.JOB_NAME}
-Build: ${env.BUILD_URL}
+Build: ${env.JENKINS_PUBLIC_URL}/job/${env.JOB_NAME}/${env.BUILD_NUMBER}/
 
 Please review the Jenkins console output for details."""
                 )
@@ -74,3 +78,4 @@ Please review the Jenkins console output for details."""
         }
     }
 }
+```
