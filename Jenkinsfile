@@ -1,4 +1,3 @@
-
 pipeline {
     agent any
 
@@ -15,6 +14,7 @@ pipeline {
         COMPOSE_PROJECT_NAME = 'inventory_part2'
         COMPOSE_FILE = 'docker-compose-part2.yml'
         ENV_FILE = '/etc/inventory-app-part2.env'
+        INSTRUCTOR_EMAIL = 'qasimalik@gmail.com'
     }
 
     stages {
@@ -86,8 +86,15 @@ pipeline {
 
                 def jenkinsUrl = "http://${publicIp}:8080"
 
+                def recipients = [
+                    env.COMMIT_AUTHOR_EMAIL,
+                    env.INSTRUCTOR_EMAIL
+                ].findAll { it?.trim() }
+                 .unique()
+                 .join(',')
+
                 emailext(
-                    to: "${env.COMMIT_AUTHOR_EMAIL ?: ''}",
+                    to: recipients,
                     recipientProviders: [
                         [$class: 'DevelopersRecipientProvider']
                     ],
