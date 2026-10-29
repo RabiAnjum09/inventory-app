@@ -1,4 +1,4 @@
-```groovy
+
 pipeline {
     agent any
 
@@ -15,15 +15,13 @@ pipeline {
         COMPOSE_PROJECT_NAME = 'inventory_part2'
         COMPOSE_FILE = 'docker-compose-part2.yml'
         ENV_FILE = '/etc/inventory-app-part2.env'
-
-        // Update this value if your EC2 public IP changes
-        JENKINS_PUBLIC_URL = 'http://13.50.110.20:8080'
     }
 
     stages {
         stage('Checkout') {
             steps {
                 checkout scm
+
                 script {
                     env.COMMIT_AUTHOR_EMAIL = sh(
                         script: "git log -1 --format='%ae'",
@@ -36,8 +34,11 @@ pipeline {
         stage('Validate') {
             steps {
                 sh '''
+                    set -e
+
                     test -f "$COMPOSE_FILE"
                     test -r "$ENV_FILE"
+
                     docker compose \
                       --env-file "$ENV_FILE" \
                       -f "$COMPOSE_FILE" \
@@ -49,6 +50,8 @@ pipeline {
         stage('Deploy Part-II') {
             steps {
                 sh '''
+                    set -e
+
                     docker compose \
                       --env-file "$ENV_FILE" \
                       -f "$COMPOSE_FILE" \
@@ -61,6 +64,28 @@ pipeline {
     post {
         always {
             script {
+                def publicIp = sh(
+                    script: '''
+                        set -e
+
+                        TOKEN=$(curl -fsS \
+                          --connect-timeout 3 \
+                          --max-time 5 \
+                          -X PUT \
+                          "http://169.254.169.254/latest/api/token" \
+                          -H "X-aws-ec2-metadata-token-ttl-seconds: 60")
+
+                        curl -fsS \
+                          --connect-timeout 3 \
+                          --max-time 5 \
+                          -H "X-aws-ec2-metadata-token: $TOKEN" \
+                          "http://169.254.169.254/latest/meta-data/public-ipv4"
+                    ''',
+                    returnStdout: true
+                ).trim()
+
+                def jenkinsUrl = "http://${publicIp}:8080"
+
                 emailext(
                     to: "${env.COMMIT_AUTHOR_EMAIL ?: ''}",
                     recipientProviders: [
@@ -70,7 +95,7 @@ pipeline {
                     body: """Build result: ${currentBuild.currentResult}
 
 Job: ${env.JOB_NAME}
-Build: ${env.JENKINS_PUBLIC_URL}/job/${env.JOB_NAME}/${env.BUILD_NUMBER}/
+Build: ${jenkinsUrl}/job/${env.JOB_NAME}/${env.BUILD_NUMBER}/
 
 Please review the Jenkins console output for details."""
                 )
@@ -78,4 +103,3 @@ Please review the Jenkins console output for details."""
         }
     }
 }
-```
